@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { AppleMenu } from "./AppleMenu";
 import { useAppContext } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
+import projectIcons from "@/config/projectIcons";
+import { ProjectWindow } from "@/components/dialogs/ProjectWindow";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,40 +14,75 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { HelpDialog } from "@/components/dialogs/HelpDialog";
 import { AboutDialog } from "@/components/dialogs/AboutDialog";
+import { ContactDialog } from "@/components/dialogs/ContactDialog";
+import { ServiceDialog } from "@/components/dialogs/ServiceDialog";
 import { useLaunchApp } from "@/hooks/useLaunchApp";
 import { useAppStoreShallow } from "@/stores/helpers";
 import { Slider } from "@/components/ui/slider";
 import { Volume1, Volume2, VolumeX, Settings } from "lucide-react";
 import { useSound, Sounds } from "@/hooks/useSound";
 
-const finderHelpItems = [
+const helpItems = [
   {
-    icon: "🔍",
-    title: "Browse Files",
-    description: "Navigate through your files and folders",
+    icon: "🏢",
+    title: "About Us",
+    description: "Learn about ThoughtSeed company and our mission",
   },
   {
-    icon: "📁",
-    title: "Create Folders",
-    description: "Organize your files with new folders",
+    icon: "💼",
+    title: "Our Services",
+    description: "Explore our service offerings and expertise",
   },
   {
-    icon: "🗑️",
-    title: "Delete Files",
-    description: "Remove unwanted files and folders",
+    icon: "📂",
+    title: "View Projects",
+    description: "Browse our portfolio of successful projects",
+  },
+  {
+    icon: "✉️",
+    title: "Contact Us",
+    description: "Get in touch with our team",
   },
 ];
 
-const finderMetadata = {
-  name: "Finder",
+const thoughtseedMetadata = {
+  name: "ThoughtSeedOS",
   version: "1.0.0",
   creator: {
-    name: "Ryo",
-    url: "https://github.com/ryokun6",
+    name: "ThoughtSeed",
+    url: "#",
   },
-  github: "https://github.com/ryokun6/ryos",
+  description: "Growing innovation since 2020",
   icon: "/icons/mac.png",
 };
+
+const serviceItems = [
+  {
+    name: "Brand Strategy",
+    description: "Develop a cohesive and compelling brand identity",
+    icon: "🎯"
+  },
+  {
+    name: "Growth Marketing",
+    description: "Data-driven strategies to expand your market reach",
+    icon: "📈"
+  },
+  {
+    name: "Web Development",
+    description: "Custom web solutions tailored to your business needs",
+    icon: "💻"
+  },
+  {
+    name: "UI/UX Design",
+    description: "Intuitive interfaces and seamless user experiences",
+    icon: "🎨"
+  },
+  {
+    name: "Mobile Apps",
+    description: "Native and cross-platform mobile applications",
+    icon: "📱"
+  },
+];
 
 interface MenuBarProps {
   children?: React.ReactNode;
@@ -115,13 +152,28 @@ function DefaultMenuItems() {
   const launchApp = useLaunchApp();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
+  const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
+  const [isProjectWindowOpen, setIsProjectWindowOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<typeof serviceItems[0] | null>(null);
+  const [selectedProject, setSelectedProject] = useState<typeof projectIcons[0] | null>(null);
 
-  const handleLaunchFinder = (path: string) => {
-    launchApp("finder", { initialPath: path });
+  // This function was removed since we now use the Projects dialog
+
+  const handleServiceClick = (service: typeof serviceItems[0]) => {
+    setSelectedService(service);
+    setIsServiceDialogOpen(true);
   };
 
   return (
     <>
+      {selectedProject && (
+        <ProjectWindow
+          isOpen={isProjectWindowOpen}
+          onOpenChange={setIsProjectWindowOpen}
+          project={selectedProject}
+        />
+      )}
       {/* File Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -135,32 +187,23 @@ function DefaultMenuItems() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" sideOffset={1} className="px-0">
           <DropdownMenuItem
-            onClick={() => handleLaunchFinder("/")}
+            onClick={() => launchApp('finder')}
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             New Finder Window
           </DropdownMenuItem>
           <DropdownMenuItem
-            disabled
+            onClick={() => {
+              setIsContactDialogOpen(true);
+            }}
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
-            New Folder
+            New Project Inquiry
           </DropdownMenuItem>
           <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
-          <DropdownMenuItem
-            disabled
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          <DropdownMenuItem 
+            className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
-            Move to Trash
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            disabled
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Empty Trash...
-          </DropdownMenuItem>
-          <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
-          <DropdownMenuItem className="text-md h-6 px-3 active:bg-gray-900 active:text-white">
             Close
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -179,39 +222,28 @@ function DefaultMenuItems() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" sideOffset={1} className="px-0">
           <DropdownMenuItem
-            disabled
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             Undo
           </DropdownMenuItem>
           <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
           <DropdownMenuItem
-            disabled
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             Cut
           </DropdownMenuItem>
           <DropdownMenuItem
-            disabled
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             Copy
           </DropdownMenuItem>
           <DropdownMenuItem
-            disabled
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             Paste
           </DropdownMenuItem>
-          <DropdownMenuItem
-            disabled
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
-          >
-            Clear
-          </DropdownMenuItem>
           <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
           <DropdownMenuItem
-            disabled
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             Select All
@@ -231,12 +263,13 @@ function DefaultMenuItems() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" sideOffset={1} className="px-0">
-          <DropdownMenuCheckboxItem
-            checked={false}
-            className="text-md h-6 px-3 pl-8 active:bg-gray-900 active:text-white flex justify-between items-center"
+          <DropdownMenuItem
+            onClick={() => setIsHelpDialogOpen(true)}
+            className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
-            <span>by Small Icon</span>
-          </DropdownMenuCheckboxItem>
+            Projects
+          </DropdownMenuItem>
+          <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
           <DropdownMenuCheckboxItem
             checked={true}
             className="text-md h-6 px-3 pl-8 active:bg-gray-900 active:text-white flex justify-between items-center"
@@ -248,31 +281,6 @@ function DefaultMenuItems() {
             className="text-md h-6 px-3 pl-8 active:bg-gray-900 active:text-white flex justify-between items-center"
           >
             <span>by List</span>
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
-          <DropdownMenuCheckboxItem
-            checked={true}
-            className="text-md h-6 px-3 pl-8 active:bg-gray-900 active:text-white flex justify-between items-center"
-          >
-            <span>by Name</span>
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={false}
-            className="text-md h-6 px-3 pl-8 active:bg-gray-900 active:text-white flex justify-between items-center"
-          >
-            <span>by Date</span>
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={false}
-            className="text-md h-6 px-3 pl-8 active:bg-gray-900 active:text-white flex justify-between items-center"
-          >
-            <span>by Size</span>
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={false}
-            className="text-md h-6 px-3 pl-8 active:bg-gray-900 active:text-white flex justify-between items-center"
-          >
-            <span>by Kind</span>
           </DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -290,95 +298,41 @@ function DefaultMenuItems() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" sideOffset={1} className="px-0">
           <DropdownMenuItem
-            disabled
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-md h-6 px-3 active:bg-gray-900 active:text-white font-bold"
           >
-            Back
+            Projects
           </DropdownMenuItem>
-          <DropdownMenuItem
-            disabled
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Forward
-          </DropdownMenuItem>
+          {projectIcons && projectIcons.map((project, index) => (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => {
+                setSelectedService(null);
+                setSelectedProject(project);
+                setIsProjectWindowOpen(true);
+              }}
+              className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2 pl-6"
+            >
+              <img src={project.icon} alt={project.name} className="w-4 h-4 object-contain" />
+              {project.name}
+            </DropdownMenuItem>
+          ))}
           <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
+          {/* Services Submenu */}
           <DropdownMenuItem
-            onClick={() => handleLaunchFinder("/Applications")}
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
+            className="text-md h-6 px-3 active:bg-gray-900 active:text-white font-bold"
           >
-            <img
-              src="/icons/applications.png"
-              alt=""
-              className="w-4 h-4 [image-rendering:pixelated]"
-            />
-            Applications
+            Services
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleLaunchFinder("/Documents")}
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
-          >
-            <img
-              src="/icons/documents.png"
-              alt=""
-              className="w-4 h-4 [image-rendering:pixelated]"
-            />
-            Documents
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleLaunchFinder("/Images")}
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
-          >
-            <img
-              src="/icons/images.png"
-              alt=""
-              className="w-4 h-4 [image-rendering:pixelated]"
-            />
-            Images
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleLaunchFinder("/Music")}
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
-          >
-            <img
-              src="/icons/sounds.png"
-              alt=""
-              className="w-4 h-4 [image-rendering:pixelated]"
-            />
-            Music
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleLaunchFinder("/Sites")}
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
-          >
-            <img
-              src="/icons/sites.png"
-              alt=""
-              className="w-4 h-4 [image-rendering:pixelated]"
-            />
-            Sites
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleLaunchFinder("/Videos")}
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
-          >
-            <img
-              src="/icons/movies.png"
-              alt=""
-              className="w-4 h-4 [image-rendering:pixelated]"
-            />
-            Videos
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleLaunchFinder("/Trash")}
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
-          >
-            <img
-              src="/icons/trash-empty.png"
-              alt=""
-              className="w-4 h-4 [image-rendering:pixelated]"
-            />
-            Trash
-          </DropdownMenuItem>
+          {serviceItems.map((service, index) => (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => handleServiceClick(service)}
+              className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2 pl-6"
+            >
+              <span>{service.icon}</span>
+              {service.name}
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -398,14 +352,21 @@ function DefaultMenuItems() {
             onClick={() => setIsHelpDialogOpen(true)}
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
-            Finder Help
+            ThoughtSeed Help
+          </DropdownMenuItem>
+          <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
+          <DropdownMenuItem
+            onClick={() => setIsContactDialogOpen(true)}
+            className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
+          >
+            Contact
           </DropdownMenuItem>
           <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
           <DropdownMenuItem
             onClick={() => setIsAboutDialogOpen(true)}
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
-            About Finder
+            About ThoughtSeed
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -413,13 +374,22 @@ function DefaultMenuItems() {
       <HelpDialog
         isOpen={isHelpDialogOpen}
         onOpenChange={setIsHelpDialogOpen}
-        appName="Finder"
-        helpItems={finderHelpItems}
+        appName="ThoughtSeed"
+        helpItems={helpItems}
       />
       <AboutDialog
         isOpen={isAboutDialogOpen}
         onOpenChange={setIsAboutDialogOpen}
-        metadata={finderMetadata}
+        metadata={thoughtseedMetadata}
+      />
+      <ContactDialog
+        isOpen={isContactDialogOpen}
+        onOpenChange={setIsContactDialogOpen}
+      />
+      <ServiceDialog
+        isOpen={isServiceDialogOpen}
+        onOpenChange={setIsServiceDialogOpen}
+        service={selectedService}
       />
     </>
   );
@@ -497,7 +467,8 @@ export function MenuBar({ children }: MenuBarProps) {
   const hasActiveApp = !!foregroundInstance;
 
   return (
-    <div className="fixed top-0 left-0 right-0 flex bg-system7-menubar-bg border-b-[2px] border-black px-2 h-7 items-center">
+    <div className="fixed top-0 left-0 right-0 flex bg-[#E0E0E0] border-b-[1px] border-black px-2 h-7 items-center shadow-sm z-[99999]"
+    >
       <AppleMenu apps={apps} />
       {hasActiveApp ? children : <DefaultMenuItems />}
       <div className="ml-auto flex items-center">

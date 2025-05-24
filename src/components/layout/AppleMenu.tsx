@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { AboutFinderDialog } from "@/components/dialogs/AboutFinderDialog";
+import { AboutDialog } from "@/components/dialogs/AboutDialog";
 import { AnyApp } from "@/apps/base/types";
 import { AppId } from "@/config/appRegistry";
 import { useLaunchApp } from "@/hooks/useLaunchApp";
@@ -16,8 +17,20 @@ interface AppleMenuProps {
   apps: AnyApp[];
 }
 
+const thoughtseedMetadata = {
+  name: "ThoughtSeedOS",
+  version: "1.0.0",
+  creator: {
+    name: "ThoughtSeed",
+    url: "#",
+  },
+  description: "Growing innovation since 2020",
+  icon: "/icons/mac.png",
+};
+
 export function AppleMenu({ apps }: AppleMenuProps) {
   const [aboutFinderOpen, setAboutFinderOpen] = useState(false);
+  const [aboutThoughtSeedOpen, setAboutThoughtSeedOpen] = useState(false);
   const launchApp = useLaunchApp();
 
   const handleAppClick = (appId: string) => {
@@ -25,8 +38,15 @@ export function AppleMenu({ apps }: AppleMenuProps) {
     launchApp(appId as AppId);
   };
 
+  // No longer needed since we've removed the Projects menu item
+
   return (
     <>
+      <AboutDialog
+        isOpen={aboutThoughtSeedOpen}
+        onOpenChange={setAboutThoughtSeedOpen}
+        metadata={thoughtseedMetadata}
+      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -34,16 +54,21 @@ export function AppleMenu({ apps }: AppleMenuProps) {
             size="default"
             className="h-6 text-md px-3 py-1 border-none hover:bg-gray-200 active:bg-gray-900 active:text-white focus-visible:ring-0"
           >
-            
+            <img 
+              src="/icons/mac.png" 
+              alt="Apple" 
+              className="w-4 h-4 [image-rendering:pixelated]"
+            />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" sideOffset={1} className="px-0">
           <DropdownMenuItem
-            onClick={() => setAboutFinderOpen(true)}
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
+            onClick={() => setAboutThoughtSeedOpen(true)}
+            className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
           >
-            About This Computer
+            About ThoughtSeedOS
           </DropdownMenuItem>
+
           <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
           {apps.map((app) => (
             <DropdownMenuItem

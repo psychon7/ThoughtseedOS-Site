@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { FileIcon } from "@/apps/finder/components/FileIcon";
 import { getAppIconPath } from "@/config/appRegistry";
 import { useWallpaper } from "@/hooks/useWallpaper";
+import { ProjectsFolder } from "@/apps/finder/components/ProjectsFolder";
 
 interface DesktopStyles {
   backgroundImage?: string;
@@ -29,6 +30,8 @@ export function Desktop({
   desktopStyles,
 }: DesktopProps) {
   const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
+  // We only need to store the state of the Projects folder window
+  const [isProjectsFolderOpen, setIsProjectsFolderOpen] = useState(false);
   const { wallpaperSource, isVideoWallpaper } = useWallpaper();
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -116,8 +119,11 @@ export function Desktop({
     };
   };
 
+  // Set a specific ThoughtSeed wallpaper for the desktop
+  const thoughtseedWallpaper = "/assets/wallpapers/blurred-blue.jpg";
+  
   const finalStyles = {
-    ...getWallpaperStyles(wallpaperSource),
+    ...getWallpaperStyles(thoughtseedWallpaper),
     ...desktopStyles,
   };
 
@@ -128,6 +134,20 @@ export function Desktop({
     event.stopPropagation();
     setSelectedAppId(appId);
   };
+
+  // Handler for Projects folder icon click
+  const handleProjectsFolderClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    setSelectedAppId('projects-folder');
+  };
+
+  // Handler for Projects folder double-click
+  const handleProjectsFolderOpen = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    setIsProjectsFolderOpen(true);
+  };
+
+  // Note: Project click/open handlers are now in the ProjectsFolder component
 
   const handleFinderOpen = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -140,11 +160,20 @@ export function Desktop({
   };
 
   return (
-    <div
-      className="absolute inset-0 min-h-screen h-full z-[-1] desktop-background"
-      onClick={onClick}
-      style={finalStyles}
-    >
+    <div className="relative h-full w-full">
+      {/* Project dialog at top level for maximum z-index */}
+      {/* Project windows are now handled within the ProjectsFolder component */}
+      
+      <ProjectsFolder
+        isOpen={isProjectsFolderOpen}
+        onOpenChange={setIsProjectsFolderOpen}
+      />
+      
+      <div
+        className="absolute inset-0 min-h-screen h-full z-[1] desktop-background"
+        onClick={onClick}
+        style={finalStyles}
+      >
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover z-[-10]"
@@ -156,13 +185,21 @@ export function Desktop({
         preload="auto"
         data-webkit-playsinline="true"
         style={{
-          display: isVideoWallpaper ? "block" : "none",
+          display: isVideoWallpaper ? "block" : "none"
         }}
       />
       <div className="pt-8 p-4 flex flex-col items-end h-[calc(100%-2rem)] relative z-[1]">
-        <div className="flex flex-col flex-wrap-reverse justify-start gap-1 content-start h-full">
+        {/* ThoughtSeed Welcome Text */}
+        <div className="absolute top-10 left-10 max-w-[50%] md:max-w-[40%] bg-white/80 p-4 rounded shadow-md z-[0]">
+          <h1 className="font-chicago text-2xl mb-2">Welcome to ThoughtSeedOS</h1>
+          <p className="text-sm mb-3">Growing innovation since 2020</p>
+          <p className="text-xs">Double click on any project icon to explore our work or use the menu bar to navigate services and other features.</p>
+        </div>
+        
+        {/* All Icons Column */}
+        <div className="flex flex-col flex-wrap-reverse justify-start gap-3 content-start">
           <FileIcon
-            name="Macintosh HD"
+            name="ThoughtSeed HD"
             isDirectory={true}
             icon="/icons/disk.png"
             onClick={(e) => {
@@ -173,8 +210,10 @@ export function Desktop({
             isSelected={selectedAppId === "macintosh-hd"}
             size="large"
           />
+          {/* System app icons (limited to 3) */}
           {apps
-            .filter((app) => app.id !== "finder" && app.id !== "control-panels")
+            .filter((app) => app.id !== "finder" && app.id !== "control-panels" && app.id !== "synth" && app.id !== "ipod" && !app.id.startsWith('project-'))
+            .slice(0, 3) 
             .map((app) => (
               <FileIcon
                 key={app.id}
@@ -191,8 +230,26 @@ export function Desktop({
                 size="large"
               />
             ))}
+          {/* Projects Folder Icon */}
+          <div 
+            className={`flex flex-col items-center justify-center cursor-pointer p-1 ${selectedAppId === 'projects-folder' ? 'bg-gray-200/30 rounded' : ''}`}
+            onClick={handleProjectsFolderClick}
+            onDoubleClick={handleProjectsFolderOpen}
+          >
+            <div className="w-12 h-12 mb-1 flex items-center justify-center">
+              <img 
+                src="/icons/directory.png" 
+                alt="Projects"
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
+            <div className="text-center font-geneva-12 text-[11px] leading-none text-white drop-shadow-sm whitespace-nowrap pt-1">
+              Projects
+            </div>
+          </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

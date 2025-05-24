@@ -2348,7 +2348,7 @@ assistant
             id: "system",
             role: "system",
             content:
-              "You are a coding assistant running in the terminal app on ryOS.",
+              "You are a coding assistant running in the terminal app on ThoughtSeedOS.",
           },
         ]);
 
@@ -2531,7 +2531,7 @@ assistant
           id: "system",
           role: "system",
           content:
-            "You are a coding assistant running in the terminal app on ryOS.",
+            "You are a coding assistant running in the terminal app on ThoughtSeedOS.",
         },
       ]);
 
@@ -2565,7 +2565,7 @@ assistant
           id: "system",
           role: "system",
           content:
-            "You are a coding assistant running in the terminal app on ryOS.",
+            "You are a coding assistant running in the terminal app on ThoughtSeedOS.",
         },
       ]);
 

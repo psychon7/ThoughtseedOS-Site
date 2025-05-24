@@ -19,39 +19,64 @@ function App() {
       setHasBooted: state.setHasBooted,
     })
   );
-  const [bootScreenMessage, setBootScreenMessage] = useState<string | null>(
-    null
-  );
-  const [showBootScreen, setShowBootScreen] = useState(false);
+  const [bootScreenMessage, setBootScreenMessage] = useState<string | null>(null);
+  // Always show boot screen on initial load
+  const [showBootScreen, setShowBootScreen] = useState(true);
+  // Track if boot animation has completed
+  const [bootCompleted, setBootCompleted] = useState(false);
 
   useEffect(() => {
     applyDisplayMode(displayMode);
   }, [displayMode]);
 
   useEffect(() => {
-    // Only show boot screen for system operations (reset/restore/format/debug)
+    // Check for system operation boot messages
     const persistedMessage = getNextBootMessage();
     if (persistedMessage) {
       setBootScreenMessage(persistedMessage);
-      setShowBootScreen(true);
     }
 
-    // Set first boot flag without showing boot screen
+    // Mark as booted in app state
     if (isFirstBoot) {
       setHasBooted();
     }
+
+    // Update document title
+    document.title = "ThoughtSeedOS";
+    
+    // Update meta descriptions
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'ThoughtSeedOS - Vintage Mac-style virtual desktop experience');
+    }
+    
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', 'ThoughtSeedOS - Vintage Mac-style virtual desktop experience');
+    }
+    
+    const twitterDescription = document.querySelector('meta[property="twitter:description"]');
+    if (twitterDescription) {
+      twitterDescription.setAttribute('content', 'ThoughtSeedOS - Vintage Mac-style virtual desktop experience');
+    }
   }, [isFirstBoot, setHasBooted]);
+
+  // Handle boot completion
+  const handleBootComplete = () => {
+    clearNextBootMessage();
+    setBootCompleted(true);
+    // Delay hiding the boot screen to allow for smooth transition
+    setTimeout(() => {
+      setShowBootScreen(false);
+    }, 500);
+  };
 
   if (showBootScreen) {
     return (
       <BootScreen
         isOpen={true}
         onOpenChange={() => {}}
-        title={bootScreenMessage || "System Restoring..."}
-        onBootComplete={() => {
-          clearNextBootMessage();
-          setShowBootScreen(false);
-        }}
+        onBootComplete={handleBootComplete}
       />
     );
   }
