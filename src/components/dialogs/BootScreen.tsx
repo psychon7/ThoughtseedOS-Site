@@ -120,9 +120,9 @@ export function BootScreen({
             <DialogTitle>ThoughtSeedOS Boot</DialogTitle>
           </VisuallyHidden>
           
-          <div className="flex flex-col h-full w-full p-4 overflow-hidden">
+          <div className="flex flex-col h-full w-full p-6 overflow-hidden">
             {/* Terminal logs */}
-            <div className="flex-1 overflow-auto font-mono text-[#00FF00] text-sm mb-4">
+            <div className="flex-1 overflow-auto font-mono text-white text-sm mb-4">
               {visibleLogs.map((log, i) => (
                 <div key={i} className="mb-1">
                   <span className="text-white mr-1">&gt;</span> {log}
@@ -133,8 +133,8 @@ export function BootScreen({
             
             {/* Progress bar */}
             {visibleLogs.length >= bootLogs.length && (
-              <div className="w-[80%] mx-auto mb-8">
-                <div className="flex justify-between text-[#00FF00] text-xs mb-1">
+              <div className="w-full mb-8 pl-2">
+                <div className="flex justify-between text-white text-xs mb-1">
                   <span>'20</span>
                   <span>'21</span>
                   <span>'22</span>
@@ -142,11 +142,13 @@ export function BootScreen({
                   <span>'24</span>
                   <span>'25</span>
                 </div>
-                <div className="h-5 border border-[#333333] bg-[#111111] rounded-sm overflow-hidden">
+                <div className="h-4 border border-white bg-black overflow-hidden font-mono">
                   <div 
-                    className="h-full bg-[#00FF00] transition-all duration-200"
+                    className="h-full bg-white transition-all duration-200 flex items-center px-1 justify-start"
                     style={{ width: `${progress}%` }}
-                  />
+                  >
+                    {progress >= 10 && <span className="text-black text-xs">Loading...</span>}
+                  </div>
                 </div>
               </div>
             )}

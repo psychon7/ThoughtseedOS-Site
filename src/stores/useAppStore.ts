@@ -190,8 +190,8 @@ export const useAppStore = create<AppStoreState>()(
             },
           },
         })),
-      currentWallpaper: "/wallpapers/videos/blue_flowers_loop.mp4", // Default wallpaper
-      wallpaperSource: "/wallpapers/videos/blue_flowers_loop.mp4",
+      currentWallpaper: "/wallpapers/videos/bliss_og.mp4", // Default wallpaper
+      wallpaperSource: "/wallpapers/videos/bliss_og.mp4",
       setCurrentWallpaper: (wallpaperPath) =>
         set({
           currentWallpaper: wallpaperPath,
