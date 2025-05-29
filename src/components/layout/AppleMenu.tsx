@@ -19,7 +19,7 @@ interface AppleMenuProps {
 
 const thoughtseedMetadata = {
   name: "ThoughtSeedOS",
-  version: "1.0.0",
+  version: "1.1.1.1",
   creator: {
     name: "ThoughtSeed",
     url: "#",
