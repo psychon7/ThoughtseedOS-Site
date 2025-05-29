@@ -22,8 +22,6 @@ export interface AppProps<TInitialData = unknown> {
 export interface BaseApp<TInitialData = unknown> {
   id:
     | "soundboard"
-    | "internet-explorer"
-    | "chats"
     | "textedit"
     | "control-panels"
     | "minesweeper"

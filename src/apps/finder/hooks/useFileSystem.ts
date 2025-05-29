@@ -5,10 +5,10 @@ import { getNonFinderApps, AppId } from "@/config/appRegistry";
 import { useLaunchApp } from "@/hooks/useLaunchApp";
 import { useIpodStore } from "@/stores/useIpodStore";
 import { useVideoStore } from "@/stores/useVideoStore";
-import {
-  useInternetExplorerStore,
-  type Favorite,
-} from "@/stores/useInternetExplorerStore";
+import { toast } from "sonner";
+// Internet Explorer app has been removed
+// Keeping Favorite type for compatibility
+import { type Favorite } from "@/stores/useInternetExplorerStore";
 import { useFilesStore, FileSystemItem } from "@/stores/useFilesStore";
 import { useTextEditStore } from "@/stores/useTextEditStore";
 import { useAppStore } from "@/stores/useAppStore";
@@ -381,7 +381,8 @@ export function useFileSystem(
     setCurrentIndex: setVideoIndex,
     setIsPlaying: setVideoPlaying,
   } = useVideoStore();
-  const internetExplorerStore = useInternetExplorerStore();
+  // Internet Explorer app has been removed
+  // const internetExplorerStore = useInternetExplorerStore();
 
   // Define getParentPath inside hook
   const getParentPath = (path: string): string => {
@@ -626,7 +627,8 @@ export function useFileSystem(
         ); // Log entry
         const pathParts = currentPath.split("/").filter(Boolean);
         console.log(`[useFileSystem:loadFiles] Path parts:`, pathParts); // Log parts
-        let currentLevelFavorites = internetExplorerStore.favorites;
+        // Internet Explorer app has been removed
+        let currentLevelFavorites: Favorite[] = [];
         let currentVirtualPath = "/Sites";
 
         // Traverse down the favorites structure based on the path
@@ -669,7 +671,7 @@ export function useFileSystem(
             icon: isDirectory
               ? "/icons/directory.png"
               : fav.favicon || "/icons/site.png",
-            appId: isDirectory ? undefined : "internet-explorer",
+            appId: isDirectory ? undefined : undefined, // Internet Explorer app removed
             type: isDirectory ? "directory-virtual" : "site-link",
             data: isDirectory
               ? undefined
@@ -792,7 +794,8 @@ export function useFileSystem(
       }
       // c. Favorites (Virtual)
       else if (currentPath === "/Favorites") {
-        displayFiles = internetExplorerStore.favorites.map((favorite) => ({
+        // Internet Explorer app has been removed
+        displayFiles = [].map((favorite: Favorite) => ({
           name: `${favorite.title}.webloc`,
           isDirectory: false,
           path: `/Favorites/${favorite.title}.webloc`,
@@ -816,7 +819,7 @@ export function useFileSystem(
     fileStore.items,
     ipodTracks,
     videoTracks,
-    internetExplorerStore.favorites,
+    // internetExplorerStore.favorites removed,
   ]);
 
   // Define handleFileOpen
@@ -946,14 +949,9 @@ export function useFileSystem(
           setVideoPlaying(true);
           launchApp("videos");
         } else if (file.type === "site-link" && file.data?.url) {
-          // Pass url and year via initialData instead of using IE store directly
-          launchApp("internet-explorer", {
-            initialData: {
-              url: file.data.url,
-              year: file.data.year || "current",
-            },
-          });
-          // internetExplorerStore.setPendingNavigation(file.data.url, file.data.year || "current");
+          // Internet Explorer app has been removed
+          console.log("Site link clicked, but Internet Explorer app has been removed", file.data.url);
+          toast.info("Site links are no longer supported");
         } else {
           console.warn(
             `[useFileSystem] No handler defined for opening file type: ${file.type} at path: ${file.path}`
@@ -971,7 +969,7 @@ export function useFileSystem(
       setIpodPlaying,
       setVideoIndex,
       setVideoPlaying,
-      internetExplorerStore,
+      // internetExplorerStore removed
       ensureDefaultContent,
       fileStore,
     ]

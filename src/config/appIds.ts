@@ -1,8 +1,6 @@
 export const appIds = [
   "finder",
   "soundboard",
-  "internet-explorer",
-  "chats",
   "textedit",
   "paint",
   "photo-booth",

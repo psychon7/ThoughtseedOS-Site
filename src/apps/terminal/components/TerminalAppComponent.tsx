@@ -14,7 +14,7 @@ import {
 } from "@/apps/finder/hooks/useFileSystem";
 import { useTerminalStore } from "@/stores/useTerminalStore";
 import { useLaunchApp } from "@/hooks/useLaunchApp";
-import { useAiChat } from "@/apps/chats/hooks/useAiChat";
+import { useTerminalAiChat } from "../hooks/useTerminalAiChat";
 import { useAppContext } from "@/contexts/AppContext";
 import { useAppStore } from "@/stores/useAppStore";
 import { appRegistry } from "@/config/appRegistry";
@@ -609,7 +609,7 @@ export function TerminalAppComponent({
     append: appendAiMessage,
     isLoading: isAiLoading,
     stop: stopAiResponse,
-  } = useAiChat();
+  } = useTerminalAiChat();
 
   const setAiChatMessages = useChatsStore((state) => state.setAiMessages);
 

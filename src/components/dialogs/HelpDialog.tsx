@@ -4,14 +4,18 @@ interface HelpCardProps {
   icon: string;
   title: string;
   description: string;
+  onClick?: () => void;
 }
 
-function HelpCard({ icon, title, description }: HelpCardProps) {
+function HelpCard({ icon, title, description, onClick }: HelpCardProps) {
   return (
-    <div className="p-4 bg-black/5 rounded-lg transition-colors">
+    <div 
+      className="p-4 bg-black/5 rounded-lg transition-colors hover:bg-black/10 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="text-xl">{icon}</div>
       <h3 className="font-medium">{title}</h3>
-      <p className="text-gray-700  font-geneva-12 text-[10px]">{description}</p>
+      <p className="text-gray-700 font-geneva-12 text-[10px]">{description}</p>
     </div>
   );
 }

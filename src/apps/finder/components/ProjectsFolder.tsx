@@ -90,8 +90,8 @@ export function ProjectsFolder({ isOpen, onOpenChange }: ProjectsFolderProps) {
   // Otherwise render the projects folder
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="projects-dialog-content fixed bg-[#E0E0E0] border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,0.5)] w-[600px] h-[500px] min-w-[400px] min-h-[300px] max-w-[90vw] max-h-[90vh] overflow-hidden">
-        <div className="flex flex-col h-full">
+      <DialogContent className="projects-dialog-content fixed bg-[#E0E0E0] border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,0.5)] w-[600px] h-[80vh] min-w-[400px] min-h-[300px] max-w-[90vw] max-h-[80vh] overflow-hidden">
+        <div className="flex flex-col h-full" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <DialogHeader className="border-b border-gray-300 pl-4 pr-2 py-1 flex justify-between items-center bg-[#E0E0E0] flex-shrink-0">
             <DialogTitle className="font-chicago text-center text-md m-0">Projects</DialogTitle>
             <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)} className="h-5 w-5 p-0">
@@ -99,7 +99,7 @@ export function ProjectsFolder({ isOpen, onOpenChange }: ProjectsFolderProps) {
             </Button>
           </DialogHeader>
           
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
             {/* Finder toolbar */}
             <div className="flex items-center bg-[#E0E0E0] border-b border-gray-300 p-1">
               <button className="mr-1 p-1 hover:bg-gray-300 rounded">
@@ -147,8 +147,15 @@ export function ProjectsFolder({ isOpen, onOpenChange }: ProjectsFolderProps) {
               <div className="w-1/4">Type</div>
             </div>
             
-            {/* Project list */}
-            <div className="bg-white flex-1 overflow-y-auto overflow-x-hidden">
+            {/* Project list - with proper scrolling */}
+            <div 
+              className="bg-white flex-1 overflow-y-auto overflow-x-hidden" 
+              style={{ 
+                flex: '1 1 auto',
+                minHeight: 0, /* This is crucial for Firefox */
+                height: '300px', /* Fallback height */
+                overflowY: 'auto'
+              }}>
               {projects.length === 0 ? (
                 <div className="flex items-center justify-center h-full font-geneva-12 text-sm text-gray-500">
                   No projects found

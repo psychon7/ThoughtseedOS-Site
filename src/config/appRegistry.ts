@@ -1,6 +1,4 @@
 import { TextEditApp } from "@/apps/textedit";
-import { InternetExplorerApp } from "@/apps/internet-explorer";
-import { ChatsApp } from "@/apps/chats";
 import ControlPanelsApp from "@/apps/control-panels";
 import { MinesweeperApp } from "@/apps/minesweeper";
 import { SoundboardApp } from "@/apps/soundboard";
@@ -16,7 +14,6 @@ import { appIds } from "./appIds";
 import type {
   BaseApp,
   ControlPanelsInitialData,
-  InternetExplorerInitialData,
   IpodInitialData,
   PaintInitialData,
   VideosInitialData,
@@ -58,20 +55,8 @@ export const appRegistry = {
       minSize: { width: 550, height: 375 },
     } as WindowConstraints,
   },
-  [InternetExplorerApp.id]: {
-    ...(InternetExplorerApp as BaseApp<InternetExplorerInitialData>),
-    windowConfig: {
-      defaultSize: { width: 730, height: 600 },
-      minSize: { width: 400, height: 300 },
-    } as WindowConstraints,
-  },
-  [ChatsApp.id]: {
-    ...ChatsApp,
-    windowConfig: {
-      defaultSize: { width: 560, height: 360 },
-      minSize: { width: 300, height: 320 },
-    } as WindowConstraints,
-  },
+
+
   [TextEditApp.id]: {
     ...TextEditApp,
     windowConfig: {

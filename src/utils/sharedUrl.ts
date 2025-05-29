@@ -20,17 +20,17 @@ export async function decodeSharedUrl(code: string): Promise<{ url: string; year
 
 /**
  * Extracts the code from a shared URL path
+ * Note: Internet Explorer app has been removed
  */
-export function extractCodeFromPath(path: string): string | null {
-  // Match /internet-explorer/{code} pattern
-  const match = path.match(/^\/internet-explorer\/([^\/]+)$/);
-  return match ? match[1] : null;
+export function extractCodeFromPath(_path: string): string | null {
+  // Internet Explorer app has been removed
+  return null;
 }
 
 /**
  * Generates a shareable URL for a specific app.
- * @param appId The ID of the app (e.g., 'internet-explorer', 'soundboard').
- * @returns The full shareable URL (e.g., 'https://hostname.com/internet-explorer').
+ * @param appId The ID of the app (e.g., 'soundboard').
+ * @returns The full shareable URL (e.g., 'https://hostname.com/soundboard').
  */
 export function generateAppShareUrl(appId: string): string {
   if (typeof window === 'undefined') {

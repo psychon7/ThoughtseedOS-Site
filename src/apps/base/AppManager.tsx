@@ -5,7 +5,6 @@ import { MenuBar } from "@/components/layout/MenuBar";
 import { Desktop } from "@/components/layout/Desktop";
 import { AppId, getAppComponent, appRegistry } from "@/config/appRegistry";
 import { useAppStoreShallow } from "@/stores/helpers";
-import { extractCodeFromPath } from "@/utils/sharedUrl";
 import { toast } from "sonner";
 
 interface AppManagerProps {
@@ -112,31 +111,8 @@ export function AppManager({ apps }: AppManagerProps) {
     const handleUrlNavigation = async () => {
       const path = window.location.pathname;
       console.log("[AppManager] Checking path:", path); // Keep this log for debugging
-      const ieShareCode = extractCodeFromPath(path); // Specifically checks for /internet-explorer/:code format
-
-      if (ieShareCode) {
-        // Handle shared Internet Explorer URL - Pass code directly
-        console.log("[AppManager] Detected IE share code:", ieShareCode);
-        toast.info("Opening shared Internet Explorer link...");
-
-        // Use setTimeout to ensure the event listener is ready
-        setTimeout(() => {
-          const event = new CustomEvent("launchApp", {
-            detail: {
-              appId: "internet-explorer",
-              initialData: {
-                shareCode: ieShareCode,
-              },
-            },
-          });
-          window.dispatchEvent(event);
-          console.log(
-            "[AppManager] Dispatched launchApp event for IE share code."
-          );
-        }, 0);
-
-        window.history.replaceState({}, "", "/"); // Clean URL
-      } else if (path.startsWith("/ipod/")) {
+      // Internet Explorer app has been removed
+       if (path.startsWith("/ipod/")) {
         const videoId = path.substring("/ipod/".length);
         if (videoId) {
           console.log("[AppManager] Detected iPod videoId:", videoId);
@@ -199,7 +175,6 @@ export function AppManager({ apps }: AppManagerProps) {
           // Update condition: Only clean if it's not an IE path (we handle cleaning IE path above)
           // Update condition: Also check for ipod and videos paths
           if (
-            !path.startsWith("/internet-explorer/") &&
             !path.startsWith("/ipod/") &&
             !path.startsWith("/videos/")
           ) {

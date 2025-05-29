@@ -14,6 +14,7 @@ import { HelpDialog } from "@/components/dialogs/HelpDialog";
 import { AboutDialog } from "@/components/dialogs/AboutDialog";
 import { ContactDialog } from "@/components/dialogs/ContactDialog";
 import { ServiceDialog } from "@/components/dialogs/ServiceDialog";
+import { ServicesDialog } from "@/components/dialogs/ServicesDialog";
 import { useLaunchApp } from "@/hooks/useLaunchApp";
 import { useAppStoreShallow } from "@/stores/helpers";
 import { Slider } from "@/components/ui/slider";
@@ -22,6 +23,7 @@ import { useSound, Sounds } from "@/hooks/useSound";
 import { ProjectsFolder } from "@/apps/finder/components/ProjectsFolder";
 import serviceService from "@/services/serviceService";
 
+// These help items will have onClick handlers attached in the DefaultMenuItems component
 const helpItems = [
   {
     icon: "🏢",
@@ -134,6 +136,7 @@ function DefaultMenuItems() {
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
+  const [isServicesDialogOpen, setIsServicesDialogOpen] = useState(false);
   const [isProjectsFolderOpen, setIsProjectsFolderOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<typeof serviceItems[0] | null>(null);
 
@@ -281,7 +284,7 @@ function DefaultMenuItems() {
             Projects
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setIsServiceDialogOpen(true)}
+            onClick={() => setIsServicesDialogOpen(true)}
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             Services
@@ -338,7 +341,36 @@ function DefaultMenuItems() {
         isOpen={isHelpDialogOpen}
         onOpenChange={setIsHelpDialogOpen}
         appName="ThoughtSeed"
-        helpItems={helpItems}
+        helpItems={[
+          {
+            ...helpItems[0],
+            onClick: () => {
+              setIsHelpDialogOpen(false);
+              setTimeout(() => setIsAboutDialogOpen(true), 100);
+            }
+          },
+          {
+            ...helpItems[1],
+            onClick: () => {
+              setIsHelpDialogOpen(false);
+              setTimeout(() => setIsServicesDialogOpen(true), 100);
+            }
+          },
+          {
+            ...helpItems[2],
+            onClick: () => {
+              setIsHelpDialogOpen(false);
+              setTimeout(() => setIsProjectsFolderOpen(true), 100);
+            }
+          },
+          {
+            ...helpItems[3],
+            onClick: () => {
+              setIsHelpDialogOpen(false);
+              setTimeout(() => setIsContactDialogOpen(true), 100);
+            }
+          }
+        ]}
       />
       <AboutDialog
         isOpen={isAboutDialogOpen}
@@ -353,6 +385,14 @@ function DefaultMenuItems() {
         isOpen={isServiceDialogOpen}
         onOpenChange={setIsServiceDialogOpen}
         service={selectedService}
+      />
+      <ServicesDialog
+        isOpen={isServicesDialogOpen}
+        onOpenChange={setIsServicesDialogOpen}
+        onServiceSelect={(service) => {
+          setSelectedService(service);
+          setTimeout(() => setIsServiceDialogOpen(true), 100);
+        }}
       />
       <ProjectsFolder isOpen={isProjectsFolderOpen} onOpenChange={setIsProjectsFolderOpen} />
     </>
