@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
 import { AboutFinderDialog } from "@/components/dialogs/AboutFinderDialog";
 import { AboutDialog } from "@/components/dialogs/AboutDialog";
 import { AnyApp } from "@/apps/base/types";
-import { AppId } from "@/config/appRegistry";
+import { AppId, appRegistry } from "@/config/appRegistry";
 import { useLaunchApp } from "@/hooks/useLaunchApp";
 
 interface AppleMenuProps {
@@ -31,7 +31,15 @@ const thoughtseedMetadata = {
 export function AppleMenu({ apps }: AppleMenuProps) {
   const [aboutFinderOpen, setAboutFinderOpen] = useState(false);
   const [aboutThoughtSeedOpen, setAboutThoughtSeedOpen] = useState(false);
+  const [registeredApps, setRegisteredApps] = useState<AnyApp[]>([]);
   const launchApp = useLaunchApp();
+
+  // Ensure we have a complete list of apps from the registry
+  useEffect(() => {
+    // Use both the passed apps and ensure we have all registered apps
+    const appList = apps.length > 0 ? apps : Object.values(appRegistry);
+    setRegisteredApps(appList);
+  }, [apps]);
 
   const handleAppClick = (appId: string) => {
     // Simply launch the app - the instance system will handle focus if already open
@@ -70,7 +78,7 @@ export function AppleMenu({ apps }: AppleMenuProps) {
           </DropdownMenuItem>
 
           <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
-          {apps.map((app) => (
+          {registeredApps.map((app) => (
             <DropdownMenuItem
               key={app.id}
               onClick={() => handleAppClick(app.id)}

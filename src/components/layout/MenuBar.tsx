@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { AppleMenu } from "./AppleMenu";
 import { useAppContext } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
-import projectIcons from "@/config/projectIcons";
-import { ProjectWindow } from "@/components/dialogs/ProjectWindow";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +19,8 @@ import { useAppStoreShallow } from "@/stores/helpers";
 import { Slider } from "@/components/ui/slider";
 import { Volume1, Volume2, VolumeX, Settings } from "lucide-react";
 import { useSound, Sounds } from "@/hooks/useSound";
+import { ProjectsFolder } from "@/apps/finder/components/ProjectsFolder";
+import serviceService from "@/services/serviceService";
 
 const helpItems = [
   {
@@ -56,33 +56,13 @@ const thoughtseedMetadata = {
   icon: "/icons/mac.png",
 };
 
-const serviceItems = [
-  {
-    name: "Brand Strategy",
-    description: "Develop a cohesive and compelling brand identity",
-    icon: "🎯"
-  },
-  {
-    name: "Growth Marketing",
-    description: "Data-driven strategies to expand your market reach",
-    icon: "📈"
-  },
-  {
-    name: "Web Development",
-    description: "Custom web solutions tailored to your business needs",
-    icon: "💻"
-  },
-  {
-    name: "UI/UX Design",
-    description: "Intuitive interfaces and seamless user experiences",
-    icon: "🎨"
-  },
-  {
-    name: "Mobile Apps",
-    description: "Native and cross-platform mobile applications",
-    icon: "📱"
-  },
-];
+// Load services from the service service
+const serviceItems = serviceService.getAllServices().map(service => ({
+  id: service.id,
+  name: service.name,
+  description: service.description,
+  icon: service.icon
+}));
 
 interface MenuBarProps {
   children?: React.ReactNode;
@@ -154,9 +134,8 @@ function DefaultMenuItems() {
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
-  const [isProjectWindowOpen, setIsProjectWindowOpen] = useState(false);
+  const [isProjectsFolderOpen, setIsProjectsFolderOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<typeof serviceItems[0] | null>(null);
-  const [selectedProject, setSelectedProject] = useState<typeof projectIcons[0] | null>(null);
 
   // This function was removed since we now use the Projects dialog
 
@@ -164,16 +143,14 @@ function DefaultMenuItems() {
     setSelectedService(service);
     setIsServiceDialogOpen(true);
   };
+  
+  // Load services on component mount
+  useEffect(() => {
+    // Services are already loaded via the import
+  }, []);
 
   return (
     <>
-      {selectedProject && (
-        <ProjectWindow
-          isOpen={isProjectWindowOpen}
-          onOpenChange={setIsProjectWindowOpen}
-          project={selectedProject}
-        />
-      )}
       {/* File Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -298,28 +275,14 @@ function DefaultMenuItems() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" sideOffset={1} className="px-0">
           <DropdownMenuItem
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white font-bold"
+            onClick={() => setIsProjectsFolderOpen(true)}
+            className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             Projects
           </DropdownMenuItem>
-          {projectIcons && projectIcons.map((project, index) => (
-            <DropdownMenuItem
-              key={index}
-              onClick={() => {
-                setSelectedService(null);
-                setSelectedProject(project);
-                setIsProjectWindowOpen(true);
-              }}
-              className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2 pl-6"
-            >
-              <img src={project.icon} alt={project.name} className="w-4 h-4 object-contain" />
-              {project.name}
-            </DropdownMenuItem>
-          ))}
-          <DropdownMenuSeparator className="h-[2px] bg-black my-1" />
-          {/* Services Submenu */}
           <DropdownMenuItem
-            className="text-md h-6 px-3 active:bg-gray-900 active:text-white font-bold"
+            onClick={() => setIsServiceDialogOpen(true)}
+            className="text-md h-6 px-3 active:bg-gray-900 active:text-white"
           >
             Services
           </DropdownMenuItem>
@@ -391,6 +354,7 @@ function DefaultMenuItems() {
         onOpenChange={setIsServiceDialogOpen}
         service={selectedService}
       />
+      <ProjectsFolder isOpen={isProjectsFolderOpen} onOpenChange={setIsProjectsFolderOpen} />
     </>
   );
 }

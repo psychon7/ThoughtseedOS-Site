@@ -1,20 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ExternalLink } from "lucide-react";
+import { Project } from "@/services/projectService";
 
 interface ProjectWindowProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  project: {
-    id: string;
-    name: string;
-    description: string;
-    icon: string;
-    tags: string[];
-    screenshots: string[];
-    tech?: string[];
-  } | null;
+  project: Project | null;
   instanceId?: string;
 }
 
@@ -22,14 +15,23 @@ export function ProjectWindow({ isOpen, onOpenChange, project, instanceId = "pro
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   if (!project || !isOpen) return null;
-
+  
+  // Move these handlers inside useEffect to avoid React hooks rules violation
+  // This is needed because we're defining these functions after a conditional return
+  useEffect(() => {
+    // Reset image index when project changes
+    setCurrentImageIndex(0);
+  }, [project]);
+  
   const handlePrevImage = () => {
+    if (!project.screenshots || project.screenshots.length <= 1) return;
     setCurrentImageIndex((prev) => 
       prev === 0 ? project.screenshots.length - 1 : prev - 1
     );
   };
 
   const handleNextImage = () => {
+    if (!project.screenshots || project.screenshots.length <= 1) return;
     setCurrentImageIndex((prev) => 
       prev === project.screenshots.length - 1 ? 0 : prev + 1
     );
@@ -50,7 +52,7 @@ export function ProjectWindow({ isOpen, onOpenChange, project, instanceId = "pro
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="project-window-content fixed bg-[#E0E0E0] border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,0.5)] p-0 pt-0 pb-0 w-[560px] max-w-[90vw] max-h-[80vh] overflow-visible resize">
+      <DialogContent className="project-window-content fixed bg-[#E0E0E0] border-2 border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,0.5)] p-0 pt-0 pb-0 w-[700px] h-[500px] min-w-[400px] min-h-[400px] max-w-[90vw] max-h-[90vh] overflow-auto resize">
         <DialogHeader className="border-b border-gray-300 pl-4 pr-2 py-1 flex justify-between items-center">
           <DialogTitle className="font-chicago text-center text-md m-0">{project.name}</DialogTitle>
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)} className="h-5 w-5 p-0">
@@ -58,11 +60,11 @@ export function ProjectWindow({ isOpen, onOpenChange, project, instanceId = "pro
           </Button>
         </DialogHeader>
         
-        <div className="flex p-4 h-[calc(100%-32px)]">
+        <div className="flex flex-col md:flex-row p-4 h-[calc(100%-32px)] overflow-auto">
           {/* Left side: Screenshots carousel */}
-          <div className="w-1/2 pr-4 relative">
+          <div className="w-full md:w-1/2 pr-0 md:pr-4 relative mb-4 md:mb-0">
             <div className="border border-gray-400 bg-white p-1 h-[240px] flex items-center justify-center relative">
-              {project.screenshots.length > 0 ? (
+              {project.screenshots && project.screenshots.length > 0 ? (
                 <img 
                   src={project.screenshots[currentImageIndex]} 
                   alt={`${project.name} screenshot ${currentImageIndex + 1}`}
@@ -107,7 +109,7 @@ export function ProjectWindow({ isOpen, onOpenChange, project, instanceId = "pro
           </div>
           
           {/* Right side: Project details */}
-          <div className="w-1/2 pl-2 flex flex-col overflow-y-auto">
+          <div className="w-full md:w-1/2 pl-0 md:pl-2 flex flex-col overflow-y-auto">
             <div className="flex items-center mb-2">
               <img 
                 src={project.icon} 
@@ -119,6 +121,15 @@ export function ProjectWindow({ isOpen, onOpenChange, project, instanceId = "pro
             
             <p className="my-2 font-geneva-12 text-sm">{project.description}</p>
             
+            {/* Client information */}
+            {project.client && (
+              <div className="mb-2">
+                <h4 className="font-chicago text-xs mb-1">Client:</h4>
+                <p className="font-geneva-12 text-sm">{project.client} ({project.year || 'N/A'})</p>
+              </div>
+            )}
+            
+            {/* Technologies */}
             {project.tech && project.tech.length > 0 && (
               <div className="mb-2">
                 <h4 className="font-chicago text-xs mb-1">Technologies:</h4>
@@ -132,6 +143,7 @@ export function ProjectWindow({ isOpen, onOpenChange, project, instanceId = "pro
               </div>
             )}
             
+            {/* Tags */}
             <div className="mb-2">
               <h4 className="font-chicago text-xs mb-1">Tags:</h4>
               <div className="flex flex-wrap gap-2 mb-6">
@@ -143,6 +155,22 @@ export function ProjectWindow({ isOpen, onOpenChange, project, instanceId = "pro
               </div>
             </div>
             
+            {/* Project URL */}
+            {project.url && (
+              <div className="mb-4">
+                <a 
+                  href={project.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="font-geneva-12 text-xs flex items-center text-blue-600 hover:underline"
+                >
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  Visit Project
+                </a>
+              </div>
+            )}
+            
+            {/* Buttons */}
             <div className="mt-auto text-center">
               <Button 
                 onClick={() => onOpenChange(false)}

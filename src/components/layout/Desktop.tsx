@@ -191,9 +191,9 @@ export function Desktop({
       <div className="pt-8 p-4 flex flex-col items-end h-[calc(100%-2rem)] relative z-[1]">
         {/* ThoughtSeed Welcome Text */}
         <div className="absolute top-10 left-10 max-w-[50%] md:max-w-[40%] bg-white/80 p-4 rounded shadow-md z-[0]">
-          <h1 className="font-chicago text-2xl mb-2">Welcome to ThoughtSeedOS</h1>
-          <p className="text-sm mb-3">Growing innovation since 2020</p>
-          <p className="text-xs">Double click on any project icon to explore our work or use the menu bar to navigate services and other features.</p>
+          <h1 className="font-geneva-12 text-2xl mb-2">Welcome to ThoughtSeedOS</h1>
+          <p className="font-geneva-12 text-sm mb-3">Growing innovation since 2020</p>
+          <p className="font-geneva-12 text-xs">Double click on any project icon to explore our work or use the menu bar to navigate services and other features.</p>
         </div>
         
         {/* All Icons Column */}
