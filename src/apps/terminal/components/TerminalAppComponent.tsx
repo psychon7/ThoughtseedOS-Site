@@ -648,10 +648,14 @@ export function TerminalAppComponent({
   // Initialize with welcome message
   useEffect(() => {
     const currentTime = new Date().toLocaleTimeString();
-    const asciiArt = `     __  __ 
- _  /  \\(_  
-| \\/\\__/__) 
-  /         `;
+    const asciiArt = `  _____ _                       _    _                 _  ___  _____ 
+ |_   _| |                     | |  | |               | |/ _ \/ ____|
+   | | | |__   ___  _   _  __ _| |__| |_ ___  ___  __| | | | \___  \
+   | | | '_ \ / _ \| | | |/ _\`|  __  __/ __|/ _ \/ _\`| | | | |___) |
+   | | | | | | (_) | |_| | (_| | |  | |_\__ \  __/ (_| | |_| |_____/ 
+   |_| |_| |_|\___/ \__,_|\__, |_|  |___|___/\___|\__,_|\___/\_____/
+                            __/ |                                    
+                           |___/                                     `;
 
     setCommandHistory([
       {
