@@ -1,7 +1,7 @@
 {
-  "name": "ryOS",
-  "short_name": "ryOS",
-  "description": "A web-based OS experience, made with Cursor",
+  "name": "ThoughtseedOS",
+  "short_name": "ThoughtseedOS",
+  "description": "A web-based OS experience of Thoughtseed website",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
