@@ -13,19 +13,19 @@ interface BootScreenProps {
 
 // Boot log messages
 const bootLogs = [
-  "Loading ThoughtSeedOS kernel...",
-  "Initializing system components...",
-  "Mounting virtual file system...",
-  "Loading graphic subsystems...",
-  "Checking memory integrity...",
-  "ThoughtSeedOS since 2020. Growing innovation through 2025.",
-  "Creating bespoke technology solutions...",
-  "Loading brand strategy module...",
-  "Initializing growth marketing services...",
-  "Mounting portfolio projects...",
-  "Preparing desktop environment...",
-  "Starting user interface...",
-  "System ready. Welcome to ThoughtSeedOS."
+  "ThoughtSeedOS Bootloader v4.2 initializing...",
+  "Waking synaptic cores...",
+  "Infusing creative DNA into kernel...",
+  "Assembling pixel-perfect aesthetics...",
+  "Decrypting strategic blueprints...",
+  "Linking neural nodes to growth algorithms...",
+  "Spawning bespoke solution daemons...",
+  "Optimizing brand resonance vectors...",
+  "Activating inbound marketing modules...",
+  "Uploading portfolio DNA into grid...",
+  "Rendering ideation layer...",
+  "Igniting UI dreamscape...",
+  "ThoughtSeedOS has awakened. Planting ideas. Growing impact."
 ];
 
 export function BootScreen({
