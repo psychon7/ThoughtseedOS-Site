@@ -74,7 +74,7 @@ export function ProjectWindow({ isOpen, onOpenChange, project, instanceId = "pro
                   className="max-h-[290px] max-w-[95%] object-contain"
                   onError={(e) => {
                     // Fallback image on error
-                    (e.target as HTMLImageElement).src = '/assets/placeholder.png';
+                    (e.target as HTMLImageElement).src = '/screenshots/placeholder.png';
                   }}
                 />
               ) : (
