@@ -8,7 +8,7 @@ export interface Project {
   tags: string[];
   screenshots: string[];
   tech?: string[];
-  url?: string;
+  url?: string | null;
   client?: string;
   year?: string;
   featured?: boolean;

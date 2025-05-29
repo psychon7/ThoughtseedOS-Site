@@ -5,7 +5,7 @@ import { applyDisplayMode } from "./utils/displayMode";
 import { Toaster } from "./components/ui/sonner";
 import { useAppStoreShallow } from "@/stores/helpers";
 import { BootScreen } from "./components/dialogs/BootScreen";
-import { getNextBootMessage, clearNextBootMessage } from "./utils/bootMessage";
+// import { getNextBootMessage, clearNextBootMessage } from "./utils/bootMessage";
 import { AnyApp } from "./apps/base/types";
 
 // Convert registry to array
@@ -19,11 +19,11 @@ function App() {
       setHasBooted: state.setHasBooted,
     })
   );
-  const [bootScreenMessage, setBootScreenMessage] = useState<string | null>(null);
+  // const [bootScreenMessage, setBootScreenMessage] = useState<string | null>(null);
   // Always show boot screen on initial load
   const [showBootScreen, setShowBootScreen] = useState(true);
   // Track if boot animation has completed
-  const [bootCompleted, setBootCompleted] = useState(false);
+  // const [bootCompleted, setBootCompleted] = useState(false);
 
   useEffect(() => {
     applyDisplayMode(displayMode);
@@ -31,10 +31,10 @@ function App() {
 
   useEffect(() => {
     // Check for system operation boot messages
-    const persistedMessage = getNextBootMessage();
-    if (persistedMessage) {
-      setBootScreenMessage(persistedMessage);
-    }
+    // const persistedMessage = getNextBootMessage();
+    // if (persistedMessage) {
+    //   setBootScreenMessage(persistedMessage);
+    // }
 
     // Mark as booted in app state
     if (isFirstBoot) {
@@ -63,8 +63,8 @@ function App() {
 
   // Handle boot completion
   const handleBootComplete = () => {
-    clearNextBootMessage();
-    setBootCompleted(true);
+    // clearNextBootMessage();
+    // setBootCompleted(true);
     // Delay hiding the boot screen to allow for smooth transition
     setTimeout(() => {
       setShowBootScreen(false);
